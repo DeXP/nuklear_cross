@@ -26,6 +26,7 @@
  * 
  * Not all Window modes are implemented in each frontend.
  * @see nuklear_cross.h
+ * @see https://github.com/DeXP/nuklear_cross
 */
 
 #ifndef NUKLEAR_CROSS_H

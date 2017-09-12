@@ -1,5 +1,6 @@
 # Nuklear+
 Nuklear+ (read as "Nuklear cross") is a front-end overlay for [Nuklear](https://github.com/vurtun/nuklear) GUI library.
+
 Write one simple code, compile it for any supported frontend.
 
 
@@ -8,10 +9,10 @@ Write one simple code, compile it for any supported frontend.
 
 
 ## Docs
-You can use [Doxygen docs](https://nuklear-cross.dexp.in). Or just have a look at <nuklear_cross.h> for all function descriptions.
+You can use [Doxygen docs](https://nuklear-cross.dexp.in). Or just have a look at [nuklear_cross.h](nuklear_cross.h) for all function descriptions.
 
 ## Complete Example
-It's the same example as in original [Nuklear](https://github.com/vurtun/nuklear#example). The only difference - you need to add code in original example. This one is working out of the box.
+It's the same example as in [original Nuklear](https://github.com/vurtun/nuklear#example). The only difference - you need to add code in original example. This one is working out of the box.
 
 ```c
 #include "nuklear_cross.h"
@@ -99,6 +100,8 @@ int main(){
 - Are main loop function usage required?
 - Only for Emscripten. You can organize main loop as you want if you do not plannig to make a web version.
 
+## Updating Nuklear files
+The library aims to use vanilla Nuklear.h and driver files from [demo](https://github.com/vurtun/nuklear/tree/master/demo) folder. So in general case you can just replace file by file from [Nuklear](https://github.com/vurtun/nuklear) repo. By the way, the API in demos can be changed. In that case frontend will stop work. Also, there can some functionality, not yet added to Nuklear's main repo. Also, drivers can need some small fixes. The path of `stb_image.h` in `nuklear_xlib.h` for example.
 
 ## Credits:
 Developed by Dmitry Hrabrov a.k.a. DeXPeriX and every direct or indirect contributor to the GitHub.
