@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['nkc_5ffile_5fexists',['nkc_file_exists',['../group__file.html#ga332ec44088bd5ed338841aff8fb553d5',1,'nuklear_cross.h']]],
+  ['nkc_5ffile_5fpost_5fwrite',['nkc_file_post_write',['../group__file.html#gabc4b76a893179dd3f4f66a1386b88844',1,'nuklear_cross.h']]],
+  ['nkc_5ffile_5fpre_5fread',['nkc_file_pre_read',['../group__file.html#ga4be6d4d8b9e528a661219149453ff585',1,'nuklear_cross.h']]],
+  ['nkc_5ffile_5fsize',['nkc_file_size',['../group__file.html#ga9f25453a8f6fe83b1737e032d801980e',1,'nuklear_cross.h']]],
+  ['nkc_5fget_5fctx',['nkc_get_ctx',['../group__init.html#gae88ea943acd9d54cb8cacc35c8e4a57c',1,'nuklear_cross.h']]],
+  ['nkc_5fget_5fdesktop_5fsize',['nkc_get_desktop_size',['../group__image.html#ga8d93ceb482cb580b1ae62f295e57d38a',1,'nuklear_cross.h']]],
+  ['nkc_5fget_5fkey_5fchar',['nkc_get_key_char',['../group__font.html#gaa91a35596ba17723bdae712a6ec9a3b9',1,'nuklear_cross.h']]],
+  ['nkc_5finit',['nkc_init',['../group__init.html#gaddd2f8cde2458940b3739c0de6ff9fde',1,'nuklear_cross.h']]],
+  ['nkc_5fload_5ffont_5ffile',['nkc_load_font_file',['../group__font.html#ga531faa88ce6b61cda51a41d34431d777',1,'nuklear_cross.h']]],
+  ['nkc_5fmount_5fwrite',['nkc_mount_write',['../group__file.html#gaa1ce18b867a79688ee87d0dc1a7500dc',1,'nuklear_cross.h']]],
+  ['nkc_5fpoll_5fevents',['nkc_poll_events',['../group__init.html#ga1da47bb1a31be19b257866b06aef9810',1,'nuklear_cross.h']]],
+  ['nkc_5frdie',['nkc_rdie',['../group__init.html#gafc99b49fece3d9c07fa804371faf7339',1,'nuklear_cross.h']]],
+  ['nkc_5frender',['nkc_render',['../group__render.html#gaaa5206342396de5cef4b912ec30f983e',1,'nuklear_cross.h']]],
+  ['nkc_5fset_5fmain_5floop',['nkc_set_main_loop',['../group__mainloop.html#gaec5c23793f2678c71c787f7966c6aa0e',1,'nuklear_cross.h']]],
+  ['nkc_5fshutdown',['nkc_shutdown',['../group__init.html#gaf0eabf4d4a78102e4a249de1599f7d1e',1,'nuklear_cross.h']]],
+  ['nkc_5fstdfile_5fsize',['nkc_stdfile_size',['../group__file.html#ga8184e0e0183848c1e0fe7e3c34d1bb8b',1,'nuklear_cross.h']]],
+  ['nkc_5fstop_5fmain_5floop',['nkc_stop_main_loop',['../group__mainloop.html#gabe427f058d95947dfd014919fd2b3775',1,'nuklear_cross.h']]],
+  ['nkc_5fstyle_5fset_5ffont',['nkc_style_set_font',['../group__font.html#gae8ca125472c29dc5e39fb82300c6e9d1',1,'nuklear_cross.h']]]
+];
