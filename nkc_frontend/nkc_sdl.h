@@ -38,10 +38,10 @@
 
     #if defined(NKC_OPENGL_VERSION) && (NKC_OPENGL_VERSION == NGL_ES2)      
         #if defined(NKC_IMPLEMENTATION)
-            #define NK_SDL_GL3_IMPLEMENTATION
+            #define NK_SDL_GLES2_IMPLEMENTATION
         #endif
         
-        #define _OPENGL_ES_ NGL_ES2
+        #define _OPENGL_ES_  NGL_ES2
         #include "nuklear_drivers/nuklear_sdl_gles2.h"
     #else
         #if defined(NKC_OPENGL_VERSION) && (NKC_OPENGL_VERSION == 3)
@@ -148,9 +148,12 @@ NK_API struct nk_context *nkc_init(struct nkc* nkcHandle, const char* title,
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
+    #if (NKC_OPENGL_VERSION >= 2) && (NKC_OPENGL_VERSION <= 3)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, NKC_OPENGL_VERSION);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, NKC_OPENGL_VERSION);
-    #if defined(NKC_USE_OPENGL) && (NKC_USE_OPENGL > 2)
+    #endif
+    
+    #if defined(NKC_USE_OPENGL) && (NKC_USE_OPENGL == 3)
         SDL_GL_SetAttribute (SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
         SDL_GL_SetAttribute (SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     #endif

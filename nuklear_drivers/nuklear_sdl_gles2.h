@@ -2,6 +2,8 @@
  * Nuklear - 1.40.8 - public domain
  * no warrenty implied; use at your own risk.
  * authored from 2015-2017 by Micha Mettke
+ * emscripten from 2016 by Chris Willcocks
+ * OpenGL ES 2.0 from 2017 by Dmitry Hrabrov a.k.a. DeXPeriX
  */
 /*
  * ==============================================================
@@ -10,16 +12,11 @@
  *
  * ===============================================================
  */
-#ifndef NK_SDL_GL3_H_
-#define NK_SDL_GL3_H_
+#ifndef NK_SDL_GLES2_H_
+#define NK_SDL_GLES2_H_
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengles2.h>
-    
-    #define GL_GEN_VERTEX_ARRAYS glGenVertexArrays_SDL
-    #define GL_BIND_VERTEX_ARRAY glBindVertexArray_SDL
-    PFNGLGENVERTEXARRAYSOESPROC glGenVertexArrays_SDL;
-    PFNGLBINDVERTEXARRAYOESPROC glBindVertexArray_SDL;
 
 
 NK_API struct nk_context*   nk_sdl_init(SDL_Window *win);
@@ -40,14 +37,14 @@ NK_API void                 nk_sdl_device_create(void);
  *
  * ===============================================================
  */
-#ifdef NK_SDL_GL3_IMPLEMENTATION
+#ifdef NK_SDL_GLES2_IMPLEMENTATION
 
 #include <string.h>
 
 struct nk_sdl_device {
     struct nk_buffer cmds;
     struct nk_draw_null_texture null;
-    GLuint vbo, vao, ebo;
+    GLuint vbo, ebo;
     GLuint prog;
     GLuint vert_shdr;
     GLuint frag_shdr;
@@ -57,6 +54,8 @@ struct nk_sdl_device {
     GLint uniform_tex;
     GLint uniform_proj;
     GLuint font_tex;
+    GLsizei vs;
+    size_t vp, vt, vc;
 };
 
 struct nk_sdl_vertex {
@@ -73,41 +72,7 @@ static struct nk_sdl {
 } sdl;
 
 
-
-void _print_shader_info_log(GLuint shader_index) {
-  int max_length = 2048;
-  int actual_length = 0;
-  char shader_log[2048];
-  glGetShaderInfoLog(shader_index, max_length, &actual_length, shader_log);
-  printf("shader info log for GL index %u:\n%s\n", shader_index, shader_log);
-}
-
-void _check_gl_error(const char *file, int line) {
-        GLenum err = glGetError();
-        while(err!=GL_NO_ERROR) {
-            const char* error;
- 
-                switch(err) {
-                        case GL_INVALID_OPERATION:      error="INVALID_OPERATION";      break;
-                        case GL_INVALID_ENUM:           error="INVALID_ENUM";           break;
-                        case GL_INVALID_VALUE:          error="INVALID_VALUE";          break;
-                        case GL_OUT_OF_MEMORY:          error="OUT_OF_MEMORY";          break;
-                        case GL_INVALID_FRAMEBUFFER_OPERATION:  error="INVALID_FRAMEBUFFER_OPERATION";  break;
-                        default: error = "UNKNOWN!"; break;
-                }
-                printf("GL_%s - %s : %d\n", error, file, line);
-                /*exit(0);*/
-                err=glGetError();
-        }
-}
-
-#define check_gl_error() _check_gl_error(__FILE__,__LINE__)
-
-
-
 #define NK_SHADER_VERSION "#version 100\n"
-/*#define NK_SHADER_VERSION "#version 300 es\n"*/
-
 
 
 NK_API void
@@ -127,17 +92,6 @@ nk_sdl_device_create(void)
         "   Frag_Color = Color;\n"
         "   gl_Position = ProjMtx * vec4(Position.xy, 0, 1);\n"
         "}\n";
-        /*"uniform mat4 ProjMtx;\n"
-        "in vec2 Position;\n"
-        "in vec2 TexCoord;\n"
-        "in vec4 Color;\n"
-        "out vec2 Frag_UV;\n"
-        "out vec4 Frag_Color;\n"
-        "void main() {\n"
-        "   Frag_UV = TexCoord;\n"
-        "   Frag_Color = Color;\n"
-        "   gl_Position = ProjMtx * vec4(Position.xy, 0, 1);\n"
-        "}\n";*/
     static const GLchar *fragment_shader =
         NK_SHADER_VERSION
         "precision mediump float;\n"
@@ -147,20 +101,8 @@ nk_sdl_device_create(void)
         "void main(){\n"
         "   gl_FragColor = Frag_Color * texture2D(Texture, Frag_UV);\n"
         "}\n";
-        /*"precision mediump float;\n"
-        "uniform sampler2D Texture;\n"
-        "in vec2 Frag_UV;\n"
-        "in vec4 Frag_Color;\n"
-        "out vec4 Out_Color;\n"
-        "void main(){\n"
-        "   Out_Color = Frag_Color * texture(Texture, Frag_UV.st);\n"
-        "}\n";*/
 
     struct nk_sdl_device *dev = &sdl.ogl;
-    #if defined(_OPENGL_ES_)
-    glGenVertexArrays_SDL = (PFNGLGENVERTEXARRAYSOESPROC)SDL_GL_GetProcAddress( "glGenVertexArraysOES" );
-    glBindVertexArray_SDL = (PFNGLBINDVERTEXARRAYOESPROC)SDL_GL_GetProcAddress( "glBindVertexArrayOES" );
-    #endif
     
     nk_buffer_init_default(&dev->cmds);
     dev->prog = glCreateProgram();
@@ -179,62 +121,26 @@ nk_sdl_device_create(void)
     glLinkProgram(dev->prog);
     glGetProgramiv(dev->prog, GL_LINK_STATUS, &status);
     assert(status == GL_TRUE);
-check_gl_error();
 
-int params = -1;
-GLuint shader_index = dev->vert_shdr; 
-glGetShaderiv(shader_index, GL_COMPILE_STATUS, &params);
-if (GL_TRUE != params) {
-  fprintf(stderr, "ERROR: GL shader index %i did not compile\n", shader_index);
-  _print_shader_info_log(shader_index);
-}
-
-params = -1;
-shader_index = dev->frag_shdr; 
-glGetShaderiv(shader_index, GL_COMPILE_STATUS, &params);
-if (GL_TRUE != params) {
-  fprintf(stderr, "ERROR: GL shader index %i did not compile\n", shader_index);
-  _print_shader_info_log(shader_index);
-}
 
     dev->uniform_tex = glGetUniformLocation(dev->prog, "Texture");
     dev->uniform_proj = glGetUniformLocation(dev->prog, "ProjMtx");
     dev->attrib_pos = glGetAttribLocation(dev->prog, "Position");
     dev->attrib_uv = glGetAttribLocation(dev->prog, "TexCoord");
     dev->attrib_col = glGetAttribLocation(dev->prog, "Color");
-check_gl_error();
     {
-        /* buffer setup */
-        /*GLsizei vs = sizeof(struct nk_sdl_vertex);
-        size_t vp = offsetof(struct nk_sdl_vertex, position);
-        size_t vt = offsetof(struct nk_sdl_vertex, uv);
-        size_t vc = offsetof(struct nk_sdl_vertex, col);*/
-
+        dev->vs = sizeof(struct nk_sdl_vertex);
+        dev->vp = offsetof(struct nk_sdl_vertex, position);
+        dev->vt = offsetof(struct nk_sdl_vertex, uv);
+        dev->vc = offsetof(struct nk_sdl_vertex, col);
+        
+        /* Allocate buffers */
         glGenBuffers(1, &dev->vbo);
         glGenBuffers(1, &dev->ebo);
-        /*GL_GEN_VERTEX_ARRAYS(1, &dev->vao);
-
-        GL_BIND_VERTEX_ARRAY(dev->vao);*/
-        glBindBuffer(GL_ARRAY_BUFFER, dev->vbo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, dev->ebo);
-check_gl_error();
-
-        /*glEnableVertexAttribArray((GLuint)dev->attrib_pos);
-        glEnableVertexAttribArray((GLuint)dev->attrib_uv);
-        glEnableVertexAttribArray((GLuint)dev->attrib_col);
-check_gl_error();
-
-        glVertexAttribPointer((GLuint)dev->attrib_pos, 2, GL_FLOAT, GL_FALSE, vs, (void*)vp);
-check_gl_error();
-        glVertexAttribPointer((GLuint)dev->attrib_uv, 2, GL_FLOAT, GL_FALSE, vs, (void*)vt);
-check_gl_error();
-        glVertexAttribPointer((GLuint)dev->attrib_col, 4, GL_UNSIGNED_BYTE, GL_TRUE, vs, (void*)vc);
-check_gl_error();*/
     }
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-check_gl_error();
 }
 
 NK_INTERN void
@@ -285,7 +191,6 @@ nk_sdl_render(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_b
     scale.x = (float)display_width/(float)width;
     scale.y = (float)display_height/(float)height;
 
-check_gl_error();
     /* setup global state */
     glViewport(0,0,display_width,display_height);
     glEnable(GL_BLEND);
@@ -295,11 +200,9 @@ check_gl_error();
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_SCISSOR_TEST);
     glActiveTexture(GL_TEXTURE0);
-check_gl_error();
 
     /* setup program */
     glUseProgram(dev->prog);
-check_gl_error();
     glUniform1i(dev->uniform_tex, 0);
     glUniformMatrix4fv(dev->uniform_proj, 1, GL_FALSE, &ortho[0][0]);
     {
@@ -308,32 +211,20 @@ check_gl_error();
         void *vertices, *elements;
         const nk_draw_index *offset = NULL;
 
-        /* allocate vertex and element buffer */
-        /*GL_BIND_VERTEX_ARRAY(dev->vao);*/
+        /* Bind buffers */
         glBindBuffer(GL_ARRAY_BUFFER, dev->vbo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, dev->ebo);
         
         {
-        /* buffer setup */
-        GLsizei vs = sizeof(struct nk_sdl_vertex);
-        size_t vp = offsetof(struct nk_sdl_vertex, position);
-        size_t vt = offsetof(struct nk_sdl_vertex, uv);
-        size_t vc = offsetof(struct nk_sdl_vertex, col);
+            /* buffer setup */
+            glEnableVertexAttribArray((GLuint)dev->attrib_pos);
+            glEnableVertexAttribArray((GLuint)dev->attrib_uv);
+            glEnableVertexAttribArray((GLuint)dev->attrib_col);
 
-        glEnableVertexAttribArray((GLuint)dev->attrib_pos);
-        check_gl_error();
-        glEnableVertexAttribArray((GLuint)dev->attrib_uv);
-        check_gl_error();
-        glEnableVertexAttribArray((GLuint)dev->attrib_col);
-        check_gl_error();
-
-        glVertexAttribPointer((GLuint)dev->attrib_pos, 2, GL_FLOAT, GL_FALSE, vs, (void*)vp);
-        check_gl_error();
-        glVertexAttribPointer((GLuint)dev->attrib_uv, 2, GL_FLOAT, GL_FALSE, vs, (void*)vt);
-        check_gl_error();
-        glVertexAttribPointer((GLuint)dev->attrib_col, 4, GL_UNSIGNED_BYTE, GL_TRUE, vs, (void*)vc);
-        check_gl_error();
-    }
+            glVertexAttribPointer((GLuint)dev->attrib_pos, 2, GL_FLOAT, GL_FALSE, dev->vs, (void*)dev->vp);
+            glVertexAttribPointer((GLuint)dev->attrib_uv, 2, GL_FLOAT, GL_FALSE, dev->vs, (void*)dev->vt);
+            glVertexAttribPointer((GLuint)dev->attrib_col, 4, GL_UNSIGNED_BYTE, GL_TRUE, dev->vs, (void*)dev->vc);
+        }
 
         glBufferData(GL_ARRAY_BUFFER, max_vertex_buffer, NULL, GL_STREAM_DRAW);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, max_element_buffer, NULL, GL_STREAM_DRAW);
