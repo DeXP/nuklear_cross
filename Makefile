@@ -5,8 +5,9 @@ EMCC = emcc
 WINCC = i686-w64-mingw32-gcc 
 SOURCE = nuklear_cross.c
 EXE = nkcexample
-CFLAGS = -O2 -Wall -std=c89 -DNKC_EXAMPLE -DNDEBUG -I.
+CFLAGS = -O2 -Wall -DNKC_EXAMPLE -DNDEBUG
 LDFLAGS = -s -lm
+STRICTFLAGS = -std=c89
 
 LIBGLES = -lGLESv2
 ifeq ($(OS),Windows_NT)
@@ -37,9 +38,10 @@ endif
 SDLBASE  = -DNKCD=NKC_SDL  $(LIBSDL)
 GLFWBASE = -DNKCD=NKC_GLFW $(LIBGLFW)
 XLIBBASE = -DNKCD=NKC_XLIB `pkg-config --libs --cflags x11`
+RPIFLAGS = -DNKC_USE_OPENGL=NGL_ES2 -DNKC_RASPBERRY_PI -I/opt/vc/include -L/opt/vc/lib -lbcm_host -lbrcmGLESv2
 
-COMP = $(CC) $(SOURCE) $(CFLAGS) $(LDFLAGS)
-EMCOMP = $(EMCC) $(SOURCE) $(CFLAGS)
+COMP = $(CC) $(SOURCE) $(CFLAGS) $(LDFLAGS) $(STRICTFLAGS)
+EMCOMP = $(EMCC) $(SOURCE) $(CFLAGS) $(STRICTFLAGS)
 
 
 
@@ -80,6 +82,9 @@ emscripten-sdl:
 
 gdip:
 	$(WINCC) -DNKCD=NKC_GDIP $(CFLAGS) $(LDFLAGS) $(SOURCE) -lgdiplus -lshlwapi -o $(EXE)-gdip.exe 
+
+raspberry:
+	$(CC) $(SOURCE) $(CFLAGS) $(LDFLAGS) $(SDLBASE) $(RPIFLAGS) -o $(EXE)-sdl-rasp$(BIN)
 
 
 doc:

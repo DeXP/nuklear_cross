@@ -18,7 +18,7 @@
         #define NK_GDIP_IMPLEMENTATION
     #endif
 
-    #include "nuklear_drivers/nuklear_gdip.h"
+    #include "../nuklear_drivers/nuklear_gdip.h"
     
     #define NKC_WINTITSIZE 128
     /*#define NKC_MAX_PATH 256*/
@@ -121,6 +121,16 @@ static struct {
 } nkcg;
 
 
+NK_API void* nkc_rdie(const char *fmt, ...){
+    char buffer[1024];
+    va_list ap;
+    va_start(ap, fmt);
+    vsprintf(buffer, fmt, ap);
+    va_end(ap);
+
+    MessageBoxA(NULL, buffer, "Error", MB_ICONERROR | MB_OK);
+    return NULL;
+}
 
 LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam){
     WORD lo, hi;

@@ -14,6 +14,11 @@
     #if NKC_OPENGL_VERSION == 3
         #include <GL/glew.h>
     #endif
+    
+    #if defined(NKC_RASPBERRY_PI)
+        #include "bcm_host.h"
+    #endif
+    
 
     #include <SDL2/SDL.h>
     
@@ -42,18 +47,18 @@
         #endif
         
         #define _OPENGL_ES_  NGL_ES2
-        #include "nuklear_drivers/nuklear_sdl_gles2.h"
+        #include "../nuklear_drivers/nuklear_sdl_gles2.h"
     #else
         #if defined(NKC_OPENGL_VERSION) && (NKC_OPENGL_VERSION == 3)
             #if defined(NKC_IMPLEMENTATION)
                 #define NK_SDL_GL3_IMPLEMENTATION
             #endif
-            #include "nuklear_drivers/nuklear_sdl_gl3.h"
+            #include "../nuklear_drivers/nuklear_sdl_gl3.h"
         #else
             #if defined(NKC_IMPLEMENTATION)
                 #define NK_SDL_GL2_IMPLEMENTATION
             #endif
-            #include "nuklear_drivers/nuklear_sdl_gl2.h"
+            #include "../nuklear_drivers/nuklear_sdl_gl2.h"
         #endif
     #endif
 
@@ -139,6 +144,9 @@ NK_API struct nk_context *nkc_init(struct nkc* nkcHandle, const char* title,
                         int width, int height, enum nkc_window_mode windowMode)
 {
     struct nk_font_atlas *atlas;
+    #if defined(NKC_RASPBERRY_PI)
+        bcm_host_init();
+    #endif
     /* SDL setup */
     SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
     /*#if !defined(__EMSCRIPTEN__)
@@ -148,9 +156,13 @@ NK_API struct nk_context *nkc_init(struct nkc* nkcHandle, const char* title,
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
-    #if (NKC_OPENGL_VERSION >= 2) && (NKC_OPENGL_VERSION <= 3)
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, NKC_OPENGL_VERSION);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, NKC_OPENGL_VERSION);
+    #if (NKC_OPENGL_VERSION == 2) || (NKC_OPENGL_VERSION == 3)
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, NKC_OPENGL_VERSION);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, NKC_OPENGL_VERSION);
+    #elif (NKC_OPENGL_VERSION == NGL_ES2)
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2); 
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0); 
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES); 
     #endif
     
     #if defined(NKC_USE_OPENGL) && (NKC_USE_OPENGL == 3)
@@ -238,8 +250,12 @@ NK_API void nkc_render_gui(struct nkc* nkcHandle){
 
 #if !defined(__EMSCRIPTEN__)
 
-NK_API void* nkc_rdie(const char* message){
-    fputs(message, stdout);
+NK_API void* nkc_rdie(const char *fmt, ...){
+    va_list ap;
+    va_start(ap, fmt);
+    vfprintf(stderr, fmt, ap);
+    va_end(ap);
+    fputs("\n", stderr);
     return NULL;
 }
 

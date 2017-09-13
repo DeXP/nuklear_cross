@@ -28,12 +28,12 @@
                 #define NK_XLIB_GL3_IMPLEMENTATION
             #endif
             /*#define NK_XLIB_LOAD_OPENGL_EXTENSIONS*/
-            #include "nuklear_drivers/nuklear_xlib_gl3.h"
+            #include "../nuklear_drivers/nuklear_xlib_gl3.h"
         #else
             #if defined(NKC_IMPLEMENTATION)
                 #define NK_XLIB_GL2_IMPLEMENTATION
             #endif
-            #include "nuklear_drivers/nuklear_xlib_gl2.h"
+            #include "../nuklear_drivers/nuklear_xlib_gl2.h"
         #endif
         
         #include <GL/gl.h>
@@ -46,7 +46,7 @@
                 #define NK_XLIB_INCLUDE_STB_IMAGE
                 #define NK_XLIB_IMPLEMENT_STB_IMAGE
             #endif
-        #include "nuklear_drivers/nuklear_xlib.h"
+        #include "../nuklear_drivers/nuklear_xlib.h"
     #endif
     
     
@@ -156,15 +156,13 @@
 
 #if defined(NKC_IMPLEMENTATION)
 
-static void
-die(const char *fmt, ...)
-{
+NK_API void* nkc_rdie(const char *fmt, ...){
     va_list ap;
     va_start(ap, fmt);
     vfprintf(stderr, fmt, ap);
     va_end(ap);
     fputs("\n", stderr);
-    exit(EXIT_FAILURE);
+    return NULL;
 }
 
 #if defined(NKC_USE_OPENGL)
@@ -223,14 +221,14 @@ NK_API struct nk_context *nkc_init(struct nkc* nkcHandle, const char* title,
     memset(nkcHandle, 0, sizeof(struct nkc));
     nkcHandle->winTitle = title;
     nkcHandle->dpy = XOpenDisplay(NULL);
-    if (!nkcHandle->dpy) die("Failed to open X display\n");
+    if (!nkcHandle->dpy) return nkc_rdie("Failed to open X display\n");
     {
         /* check glx version */
         int glx_major, glx_minor;
         if (!glXQueryVersion(nkcHandle->dpy, &glx_major, &glx_minor))
-            die("[X11]: Error: Failed to query OpenGL version\n");
+            return nkc_rdie("[X11]: Error: Failed to query OpenGL version\n");
         if ((glx_major == 1 && glx_minor < 3) || (glx_major < 1))
-            die("[X11]: Error: Invalid GLX version!\n");
+            return nkc_rdie("[X11]: Error: Invalid GLX version!\n");
     }
     {
         /* find and pick matching framebuffer visual */
@@ -251,7 +249,7 @@ NK_API struct nk_context *nkc_init(struct nkc* nkcHandle, const char* title,
         };
         GLXFBConfig *fbc;
         fbc = glXChooseFBConfig(nkcHandle->dpy, DefaultScreen(nkcHandle->dpy), attr, &fb_count);
-        if (!fbc) die("[X11]: Error: failed to retrieve framebuffer configuration\n");
+        if (!fbc) return nkc_rdie("[X11]: Error: failed to retrieve framebuffer configuration\n");
         {
             /* pick framebuffer with most samples per pixel */
             int i;
@@ -288,7 +286,7 @@ NK_API struct nk_context *nkc_init(struct nkc* nkcHandle, const char* title,
         nkcHandle->win = XCreateWindow(nkcHandle->dpy, RootWindow(nkcHandle->dpy, nkcHandle->vis->screen),
             0, 0, width, height, 0, nkcHandle->vis->depth, InputOutput, nkcHandle->vis->visual, 
             CWBorderPixel|CWColormap|CWEventMask, &(nkcHandle->swa) );
-        if (!nkcHandle->win) die("[X11]: Failed to create window\n");
+        if (!nkcHandle->win) return nkc_rdie("[X11]: Failed to create window\n");
         XFree(nkcHandle->vis);
         XStoreName(nkcHandle->dpy, nkcHandle->win, nkcHandle->winTitle);
         XMapWindow(nkcHandle->dpy, nkcHandle->win);
@@ -335,7 +333,7 @@ NK_API struct nk_context *nkc_init(struct nkc* nkcHandle, const char* title,
         XSync(nkcHandle->dpy, False);
         XSetErrorHandler(old_handler);
         if (gl_err || !nkcHandle->glContext)
-            die("[X11]: Failed to create an OpenGL context\n");
+            return nkc_rdie("[X11]: Failed to create an OpenGL context\n");
         glXMakeCurrent(nkcHandle->dpy, nkcHandle->win, nkcHandle->glContext);
     }
     
@@ -357,7 +355,7 @@ NK_API struct nk_context *nkc_init(struct nkc* xw, const char* title,
     memset(xw, 0, sizeof(struct nkc));
     xw->winTitle = title;
     xw->dpy = XOpenDisplay(NULL);
-    if (!xw->dpy) die("Failed to open X display\n");
+    if (!xw->dpy) return nkc_rdie("Failed to open X display\n");
     
     xw->root = DefaultRootWindow(xw->dpy);
     xw->screen = XDefaultScreen(xw->dpy);

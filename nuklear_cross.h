@@ -1,5 +1,6 @@
 /**
  * @file nuklear_cross.h
+ * @version 0.70
  * @author Dmitry Hrabrov a.k.a. DeXPeriX
  * @date 2016-2017
  * @copyright public domain - no warrenty implied; use at your own risk.
@@ -155,10 +156,10 @@ union nkc_event {
 
 
 /**
- * @brief Fatal error. Application exit. Die with message
- * @param message - string, that will be shown to user
+ * @brief Fatal error. Application exit. Die with message. Printf-like
+ * @param fmt - format string
  */
-NK_API void* nkc_rdie(const char* message);
+NK_API void* nkc_rdie(const char *fmt, ...);
 
 /**
  * @brief Initialize the library, create the operation system window

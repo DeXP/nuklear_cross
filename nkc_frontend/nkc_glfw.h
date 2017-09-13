@@ -18,6 +18,8 @@
     #endif
     #include <GLFW/glfw3.h>
     #include <string.h>
+    #include <stdarg.h>
+
 
     struct nkc {
         int nkcInited;
@@ -37,19 +39,19 @@
             #define NK_GLFW_GL3_IMPLEMENTATION
         #endif
         
-        #include "nuklear_drivers/nuklear_glfw_emscripten.h"
+        #include "../nuklear_drivers/nuklear_glfw_emscripten.h"
     #else
         #if defined(NKC_USE_OPENGL) && (NKC_USE_OPENGL > 2)
             #if defined(NKC_IMPLEMENTATION)
                 #define NK_GLFW_GL3_IMPLEMENTATION
             #endif
             
-            #include "nuklear_drivers/nuklear_glfw_gl3.h"
+            #include "../nuklear_drivers/nuklear_glfw_gl3.h"
         #else
             #if defined(NKC_IMPLEMENTATION)
                 #define NK_GLFW_GL2_IMPLEMENTATION
             #endif
-            #include "nuklear_drivers/nuklear_glfw_gl2.h"
+            #include "../nuklear_drivers/nuklear_glfw_gl2.h"
         #endif
         
         #if defined(NKC_USE_OPENGL)
@@ -142,7 +144,7 @@ static void nkc_glfw_error_callback(int e, const char *d)
 
 
 void nkc_fullscreen_enter(struct nkc* nkcHandle);
-NK_API void* nkc_rdie(const char* message);
+NK_API void* nkc_rdie(const char *fmt, ...);
 
 NK_API struct nk_context *nkc_init(struct nkc* nkcHandle, const char* title, 
                         int width, int height, enum nkc_window_mode windowMode)
@@ -283,8 +285,12 @@ NK_API void nkc_render_gui(struct nkc* nkcHandle){
 
 #if !defined(__EMSCRIPTEN__)
 
-NK_API void* nkc_rdie(const char* message){
-    fputs(message, stdout);
+NK_API void* nkc_rdie(const char *fmt, ...){
+    va_list ap;
+    va_start(ap, fmt);
+    vfprintf(stderr, fmt, ap);
+    va_end(ap);
+    fputs("\n", stderr);
     return NULL;
 }
 
