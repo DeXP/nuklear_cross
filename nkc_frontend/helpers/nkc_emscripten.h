@@ -18,10 +18,16 @@
 
 #if defined(NKC_IMPLEMENTATION)
 
-NK_API void* nkc_rdie(const char* message){
-    char buf[1024];
-    sprintf(buf, "alert('%s')", message);
-    emscripten_run_script(buf);
+NK_API void* nkc_rdie(const char *fmt, ...){
+    char scriptbuf[1024];
+    char buffer[1024];
+    va_list ap;
+    va_start(ap, fmt);
+    vsprintf(buffer, fmt, ap);
+    va_end(ap);
+    
+    sprintf(scriptbuf, "alert('%s')", buffer);
+    emscripten_run_script(scriptbuf);
     return NULL;
 }
 
