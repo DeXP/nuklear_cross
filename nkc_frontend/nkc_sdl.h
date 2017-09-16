@@ -287,7 +287,7 @@ NK_API char nkc_get_key_char(int code){
 
 #include "helpers/nkc_stb_image.h"
 #include "helpers/nkc_font_stash.h"
-NKC_FONT_STASH_LOADER(sdl);
+NKC_FONT_STASH_LOADER(sdl)
 
 #endif /* NKC_IMPLEMENTATION */
 

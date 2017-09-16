@@ -334,7 +334,7 @@ void nkc_fullscreen_enter(struct nkc* g){
 
 #include "helpers/nkc_stb_image.h"
 #include "helpers/nkc_font_stash.h"
-NKC_FONT_STASH_LOADER(glfw3);
+NKC_FONT_STASH_LOADER(glfw3)
 
 #endif /* NKC_IMPLEMENTATION */
 
