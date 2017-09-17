@@ -861,6 +861,7 @@ nk_gdip_init(HWND hwnd, unsigned int width, unsigned int height)
     nk_init_default(&gdip.ctx, NULL);
     gdip.ctx.clip.copy = nk_gdip_clipbard_copy;
     gdip.ctx.clip.paste = nk_gdip_clipbard_paste;
+    gdip.curFontCollection = 0;
     return &gdip.ctx;
 }
 
@@ -1067,7 +1068,7 @@ nk_gdip_shutdown(void)
 {
     /*GdipDeletePrivateFontCollection( &gdip.fontCollection );*/
     int i;
-    for(i=0; i< sizeof(gdip.fontCollection)/sizeof(gdip.fontCollection[0]); i++)
+    for(i=0; i< gdip.curFontCollection; i++)
         GdipDeletePrivateFontCollection( &gdip.fontCollection[i] );
     GdipDeleteGraphics(gdip.window);
     GdipDeleteGraphics(gdip.memory);

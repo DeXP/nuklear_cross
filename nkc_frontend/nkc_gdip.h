@@ -383,6 +383,7 @@ NK_API struct nk_user_font* nkc_load_font_memory(struct nkc* nkcHandle, const vo
 
 NK_API struct nk_image nkc_load_image_file(struct nkc* nkcHandle, const char* filename){
     struct nk_image img;
+    (void)nkcHandle;
     WCHAR* wfile = nkc_char_to_wchar(filename);
     img = nk_gdip_load_image_from_file(wfile);
     free(wfile);
@@ -395,7 +396,6 @@ NK_API struct nk_image nkc_load_image_memory(struct nkc* nkcHandle, const void* 
 }
 
 NK_API void nkc_image_free(struct nk_image* img){
-    /*GdipDisposeImage(img->handle.ptr);*/
     nk_gdip_image_free(*img);
     img->w = 0;
     img->h = 0;
