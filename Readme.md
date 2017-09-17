@@ -94,6 +94,34 @@ int main(){
 ![example](https://cloud.githubusercontent.com/assets/8057201/10187981/584ecd68-675c-11e5-897c-822ef534a876.png)
 
 
+## More examples
+
+- dxBin2h: https://github.com/DeXP/dxBin2h
+- Nuklear Web Demo: https://github.com/DeXP/nuklear-webdemo
+
+
+
+## How to use
+
+The best way is using Git submodules. In your project's directory:
+
+```
+git submodule add https://github.com/DeXP/nuklear_cross
+```
+
+It will create `nuklear_cross` subdirectory and will fetch all content. When you will want to actualize content:
+
+```
+cd nuklear_cross
+git checkout master
+git pull
+```
+
+
+## Applications and games, made on Nuklear+
+
+- Wordlase: [Steam](http://store.steampowered.com/app/602930/Wordlase/), [Web demo](https://wordlase.dexp.in/), [site](https://dexp.in/games/wordlase/)
+
 
 ## FAQ
 
