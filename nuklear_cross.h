@@ -40,6 +40,26 @@
 
 #define NGL_ES2 20
 
+
+
+
+#define NK_INCLUDE_FIXED_TYPES
+#define NK_INCLUDE_DEFAULT_ALLOCATOR
+#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
+#define NK_INCLUDE_FONT_BAKING
+#define NK_INCLUDE_STANDARD_IO
+#if !defined(NKC_DISABLE_DEFAULT_FONT)
+    #define NK_INCLUDE_DEFAULT_FONT
+#endif
+
+#if defined(NKC_IMPLEMENTATION) && !defined(NK_IMPLEMENTATION)
+    #define NK_IMPLEMENTATION
+#endif
+
+#include "nuklear.h"
+
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -69,19 +89,6 @@ enum nkc_window_mode {
 #define MAX_VERTEX_MEMORY 512 * 1024 /**< Internal used constant, OpenGL render @hideinitializer */
 #define MAX_ELEMENT_MEMORY 128 * 1024 /**< Internal used constant, OpenGL render @hideinitializer */
 
-#define NK_INCLUDE_FIXED_TYPES
-#define NK_INCLUDE_DEFAULT_ALLOCATOR
-#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
-#define NK_INCLUDE_FONT_BAKING
-#define NK_INCLUDE_STANDARD_IO
-#if !defined(NKC_DISABLE_DEFAULT_FONT)
-    #define NK_INCLUDE_DEFAULT_FONT
-#endif
-
-#if defined(NKC_IMPLEMENTATION) && !defined(NK_IMPLEMENTATION)
-    #define NK_IMPLEMENTATION
-#endif
-
 
 #if defined(__EMSCRIPTEN__)
     /* GL ES systems */
@@ -97,8 +104,6 @@ enum nkc_window_mode {
 
 #include <stdio.h>
 #include <string.h>
-
-#include "nuklear.h"
 
 /* Events system */
 enum nkc_event_type {
