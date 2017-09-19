@@ -19,7 +19,7 @@ var searchData=
   ['nkc_5fload_5ffont_5ffile',['nkc_load_font_file',['../group__font.html#ga531faa88ce6b61cda51a41d34431d777',1,'nuklear_cross.h']]],
   ['nkc_5fmount_5fwrite',['nkc_mount_write',['../group__file.html#gaa1ce18b867a79688ee87d0dc1a7500dc',1,'nuklear_cross.h']]],
   ['nkc_5fpoll_5fevents',['nkc_poll_events',['../group__init.html#ga1da47bb1a31be19b257866b06aef9810',1,'nuklear_cross.h']]],
-  ['nkc_5frdie',['nkc_rdie',['../group__init.html#gafc99b49fece3d9c07fa804371faf7339',1,'nuklear_cross.h']]],
+  ['nkc_5frdie',['nkc_rdie',['../group__init.html#ga207940ed04e4955b6a2cc4c2c62e4ca7',1,'nuklear_cross.h']]],
   ['nkc_5frender',['nkc_render',['../group__render.html#gaaa5206342396de5cef4b912ec30f983e',1,'nuklear_cross.h']]],
   ['nkc_5fset_5fmain_5floop',['nkc_set_main_loop',['../group__mainloop.html#gaec5c23793f2678c71c787f7966c6aa0e',1,'nuklear_cross.h']]],
   ['nkc_5fshutdown',['nkc_shutdown',['../group__init.html#gaf0eabf4d4a78102e4a249de1599f7d1e',1,'nuklear_cross.h']]],
