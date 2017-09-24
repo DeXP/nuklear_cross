@@ -142,7 +142,7 @@ union nkc_event {
     #endif
 #else
     /* if no value defined. Try to choose */
-    #if defined(WIN32) && !defined(__EMSCRIPTEN__)
+    #if defined(WIN32) || defined(_WIN32)
         #include "nkc_frontend/nkc_gdip.h"
     #else
         /* SDL if not windows */
