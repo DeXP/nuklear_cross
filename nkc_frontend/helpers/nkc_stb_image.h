@@ -61,7 +61,7 @@ NK_API struct nk_image nkc_load_image_gl(unsigned char *data, int x, int y, int 
 
 NK_API struct nk_image nkc_load_image_memory(struct nkc* nkcHandle, const void* membuf, int membufSize){
     int x,y,n;    
-    unsigned char *data = stbi_load_from_memory(membuf, membufSize, &x, &y, &n, 0);
+    unsigned char *data = stbi_load_from_memory((const stbi_uc*) membuf, membufSize, &x, &y, &n, 0);
     return nkc_load_image_gl(data, x, y, n);
 }
 
