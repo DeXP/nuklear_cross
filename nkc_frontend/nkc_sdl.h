@@ -275,7 +275,7 @@ NK_API int nkc_get_desktop_size(struct nkc* nkcHandle, int* width, int* height){
 }
 
 NK_API char nkc_get_key_char(int code){
-    const char* name = SDL_GetScancodeName(code);
+    const char* name = SDL_GetScancodeName((SDL_Scancode)code);
     if( strlen(name) == 1 ){
         if( (name[0]>='A') && (name[0]<='Z') ){
             return name[0] - 'A' + 'a'; /* 'a' for NKC_KEY_A */
